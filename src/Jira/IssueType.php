@@ -91,6 +91,7 @@ class IssueType
 		'subtask',
 		'avatarId',
 		'scope',
+        'untranslatedName'
 	);
 
 	/**
@@ -107,7 +108,7 @@ class IssueType
 				$this->$key = $value;
 			}
 			else {
-				throw new \Exception('the key ' . $key . ' does not support');
+				throw new \Exception('the key ' . $key . ' is not supported');
 			}
 		}
 	}
