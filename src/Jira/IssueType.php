@@ -91,7 +91,8 @@ class IssueType
 		'subtask',
 		'avatarId',
 		'scope',
-        'untranslatedName'
+        'untranslatedName',
+        'hierarchyLevel'
 	);
 
 	/**
