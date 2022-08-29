@@ -27,6 +27,7 @@ namespace chobie\Jira\Api\Client;
 
 use chobie\Jira\Api\Authentication\AuthenticationInterface;
 use chobie\Jira\Api\Authentication\Basic;
+use chobie\Jira\Api\Authentication\Bearer;
 use chobie\Jira\Api\Authentication\Anonymous;
 use chobie\Jira\Api\Exception;
 use chobie\Jira\Api\UnauthorizedException;
@@ -68,7 +69,7 @@ class CurlClient implements ClientInterface
 		$is_file = false,
 		$debug = false
 	) {
-		if ( !($credential instanceof Basic) && !($credential instanceof Anonymous) ) {
+		if ( !($credential instanceof Basic) && !($credential instanceof Anonymous) && !($credential instanceof Bearer) ) {
 			throw new \InvalidArgumentException(sprintf(
 				'CurlClient does not support %s authentication.',
 				get_class($credential)
@@ -89,9 +90,11 @@ class CurlClient implements ClientInterface
 		curl_setopt($curl, CURLOPT_HEADER, 0);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
-		if ( !($credential instanceof Anonymous) ) {
+		if ( ($credential instanceof Basic) ) {
 			curl_setopt($curl, CURLOPT_USERPWD, sprintf('%s:%s', $credential->getId(), $credential->getPassword()));
-		}
+                } else if ( ($credential instanceof Bearer) ) {
+			curl_setopt($curl, CURLOPT_XOAUTH2_BEARER, $credential->getToken());
+                }
 
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
