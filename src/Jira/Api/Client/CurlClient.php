@@ -93,7 +93,7 @@ class CurlClient implements ClientInterface
 		if ( ($credential instanceof Basic) ) {
 			curl_setopt($curl, CURLOPT_USERPWD, sprintf('%s:%s', $credential->getId(), $credential->getPassword()));
                 } else if ( ($credential instanceof Bearer) ) {
-			curl_setopt($curl, CURLOPT_XOAUTH2_BEARER, $credential->getToken());
+			curl_setopt($curl, CURLOPT_XOAUTH2_BEARER, $credential->getPassword());
                 }
 
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);

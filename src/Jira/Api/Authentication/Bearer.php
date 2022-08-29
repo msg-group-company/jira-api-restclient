@@ -56,11 +56,21 @@ class Bearer implements AuthenticationInterface
 	}
 
 	/**
+	 * Irrelevant for bearer token authentication.
+	 *
+	 * @return string
+	 */
+	public function getId()
+	{
+		return "";
+	}
+
+	/**
 	 * Returns token.
 	 *
 	 * @return string
 	 */
-	public function getToken()
+	public function getPassword()
 	{
 		return $this->_token;
 	}
