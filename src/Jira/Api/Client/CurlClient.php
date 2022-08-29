@@ -77,6 +77,7 @@ class CurlClient implements ClientInterface
 		}
 
 		$curl = curl_init();
+		$curl_headers = array();
 
 		if ( $method == 'GET' ) {
 			if ( !is_array($data) ) {
@@ -92,9 +93,9 @@ class CurlClient implements ClientInterface
 
 		if ( ($credential instanceof Basic) ) {
 			curl_setopt($curl, CURLOPT_USERPWD, sprintf('%s:%s', $credential->getId(), $credential->getPassword()));
-                } else if ( ($credential instanceof Bearer) ) {
-			curl_setopt($curl, CURLOPT_XOAUTH2_BEARER, $credential->getPassword());
-                }
+    } else if ( ($credential instanceof Bearer) ) {
+			$curl_headers[] = 'Authorization: Bearer ' . $credential->getPassword();
+    }
 
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
@@ -105,10 +106,10 @@ class CurlClient implements ClientInterface
 				curl_setopt($curl, CURLOPT_SAFE_UPLOAD, false);
 			}
 
-			curl_setopt($curl, CURLOPT_HTTPHEADER, array('X-Atlassian-Token: nocheck'));
+			$curl_headers[] = 'X-Atlassian-Token: nocheck';
 		}
 		else {
-			curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json;charset=UTF-8'));
+			$curl_headers[] = 'Content-Type: application/json;charset=UTF-8';
 		}
 
 		if ( $method == 'POST' ) {
@@ -127,6 +128,7 @@ class CurlClient implements ClientInterface
 			curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
 		}
 
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $curl_headers);
 		$response = curl_exec($curl);
 
 		$error_number = curl_errno($curl);
